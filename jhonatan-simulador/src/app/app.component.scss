@@ -1,0 +1,29 @@
+.element {
+    max-width: 50%;
+    display: block; // Centrar imágen
+    margin-left: auto; // Centrar imágen
+    margin-right: auto; // Centrar imágen
+}
+
+.zona-1 {
+    border: thin solid black;
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    margin: 10px;
+    height: 100%;
+    width: 10%;
+}
+
+.zona-2 {
+    border: thin solid rgb(240, 224, 1);
+    position: absolute;
+    right: 0;
+    left: 10%;
+    top: 0;
+    margin: 10px;
+    height: 100%;
+    width: 90%;
+    display: block;
+}
