@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Coordenadas } from '../models/Coordenadas';
 
 @Component({
   selector: 'app-root',
@@ -9,21 +8,25 @@ import { Coordenadas } from '../models/Coordenadas';
 export class AppComponent implements OnInit {
 
   private numeroCopiasNodoDiccionario = {};
-  private coordendadas: Coordenadas = { ax: 0, ay: 0, bx: 0, by: 0 };
   private startEnd: boolean = false;
+  private origen: string;
+  private destino: string;
+  private contadorLineas: number = 0;
 
   ngOnInit() {
   }
 
-  clickEvent(event) {
+  clickEvent(id) {
     this.startEnd = !this.startEnd;
+    console.log(this.startEnd);
+
+    console.log(id);
     if (this.startEnd) {
-      this.coordendadas.ax = event.clientX;
-      this.coordendadas.ay = event.clientY;
+      this.origen = id;
     } else {
-      this.coordendadas.bx = event.clientX;
-      this.coordendadas.by = event.clientY;
-      this.dibujarLinea(this.coordendadas);
+      this.destino = id;
+      this.contadorLineas += 1;
+      console.log(this.origen, this.destino, this.contadorLineas);
     }
 
   }
@@ -57,14 +60,14 @@ export class AppComponent implements OnInit {
       nodoCopia.style.left = event.clientX.toString().concat("px");
       nodoCopia.style.top = event.clientY.toString().concat("px");
       event.target.append(nodoCopia);
+      document.getElementById(nodoCopia.id).addEventListener("click", this.clickEvent.bind(event, nodoCopia.id));
     } else {
       (<HTMLCanvasElement>document.getElementById(idElemento)).style.left = event.clientX.toString().concat("px");
       (<HTMLCanvasElement>document.getElementById(idElemento)).style.top = event.clientY.toString().concat("px");
     }
   }
 
-  dibujarLinea(coordendadas: Coordenadas) {
-    console.log('Dibujar una linea');
+  dibujarLinea(origen, destino, contadorLineas) {
   }
 
 }
