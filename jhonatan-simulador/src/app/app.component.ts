@@ -14,13 +14,18 @@ export class AppComponent implements OnInit {
   private contadorLineas: number = 0;
 
   ngOnInit() {
+    const padre = document.getElementById("zona-2");
+    padre.addEventListener('click', (e) => {
+      if (e.target instanceof HTMLImageElement) {
+        this.clickEvent(e.target.id);
+      }
+    });
   }
 
   clickEvent(id) {
     this.startEnd = !this.startEnd;
-    console.log(this.startEnd);
-
     console.log(id);
+    console.log(this.startEnd);
     if (this.startEnd) {
       this.origen = id;
     } else {
@@ -60,7 +65,6 @@ export class AppComponent implements OnInit {
       nodoCopia.style.left = event.clientX.toString().concat("px");
       nodoCopia.style.top = event.clientY.toString().concat("px");
       event.target.append(nodoCopia);
-      document.getElementById(nodoCopia.id).addEventListener("click", this.clickEvent.bind(event, nodoCopia.id));
     } else {
       (<HTMLCanvasElement>document.getElementById(idElemento)).style.left = event.clientX.toString().concat("px");
       (<HTMLCanvasElement>document.getElementById(idElemento)).style.top = event.clientY.toString().concat("px");
