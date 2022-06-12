@@ -15,11 +15,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     const padre = document.getElementById("zona-2");
-    padre.addEventListener('click', (e) => {
-      if (e.target instanceof HTMLImageElement) {
-        this.clickEvent(e.target.id);
-      }
-    });
     padre.addEventListener('dragstart', (e) => {
       if (e.target instanceof HTMLImageElement) {
         this.arrastrar(e);
@@ -31,13 +26,15 @@ export class AppComponent implements OnInit {
     padre.addEventListener('drop', (e) => {
       this.soltar(e);
     });
-
+    padre.addEventListener('click', (e) => {
+      if (e.target instanceof HTMLImageElement) {
+        this.clickEvent(e.target.id);
+      }
+    });
   }
 
   clickEvent(id) {
     this.startEnd = !this.startEnd;
-    console.log(id);
-    console.log(this.startEnd);
     if (this.startEnd) {
       this.origen = id;
     } else {
@@ -45,10 +42,8 @@ export class AppComponent implements OnInit {
       this.contadorLineas += 1;
       let idLinea = this.origen + "_" + this.destino;
       document.getElementById("svg").innerHTML += "<path id='" + idLinea + "' d='M0 0' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
-      console.log(document.getElementById(idLinea));
       this.connectElements(document.getElementById("svg"), document.getElementById(idLinea), document.getElementById(this.origen), document.getElementById(this.destino));
     }
-
   }
 
   arrastrar(event) {
