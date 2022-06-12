@@ -18,7 +18,12 @@
     <img class="element" id="cable-corto" src="assets/img/cable-corto.png" (dragstart)="arrastrar($event)">
     <img class="element" id="pila" src="assets/img/pila.png" (dragstart)="arrastrar($event)">
   </div>
-  <div class="zona-2" id="zona-2" (dragover)="permitirSoltar($event)" (drop)="soltar($event)" (dragstart)="arrastrar($event)"></div>
+  <div class="zona-2" id="zona-2">
+    <div id="svgContainer" style="margin: 50px 50px;">
+      <svg id="svg" width="0" height="0">
+      </svg>
+    </div>
+  </div>
 </body>
 
 </html>
