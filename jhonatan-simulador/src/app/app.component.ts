@@ -97,11 +97,12 @@ export class AppComponent implements OnInit {
 
     // calculate path's start (x,y)  coords
     // we want the x coordinate to visually result in the element's mid point
-    var startX = startElem.offsetLeft + 0.5 * startElem.offsetWidth - svgLeft - 130;    // x = left offset + 0.5*width - svg's left offset
+    var offsetX = document.getElementById('zona-1').offsetWidth;
+    var startX = startElem.offsetLeft + 0.5 * startElem.offsetWidth - svgLeft - offsetX;    // x = left offset + 0.5*width - svg's left offset
     var startY = startElem.offsetTop + startElem.offsetHeight - svgTop - 14;        // y = top offset + height - svg's top offset
 
     // calculate path's end (x,y) coords
-    var endX = endElem.offsetLeft + 0.5 * endElem.offsetWidth - svgLeft - 130;
+    var endX = endElem.offsetLeft + 0.5 * endElem.offsetWidth - svgLeft - offsetX;
     var endY = endElem.offsetTop - svgTop - 14;
 
     // call function for drawing the path
