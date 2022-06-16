@@ -85,5 +85,33 @@ ul {
 }
 
 .opciones-menu:hover {
-    background-color: blue;
+    background-color: rgb(4, 142, 6);
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    z-index: 1;
+}
+
+.dropdown-child {
+    display: none;
+    background-color: skyblue;
+    min-width: 180px;
+}
+
+.dropdown:hover .dropdown-child {
+    position: absolute;
+    display: block;
+}
+
+.dropdown-child button {
+    color: black;
+    padding: 20px;
+    text-decoration: none;
+    display: block;
+}
+
+.barra-menu li {
+    list-style: none;
 }
