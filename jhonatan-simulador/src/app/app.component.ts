@@ -12,6 +12,8 @@ export class AppComponent implements OnInit {
   private origen: string;
   private destino: string;
   private contadorLineas: number = 0;
+  private estiloMenu: any = {}
+  private flag = null;
 
   ngOnInit() {
     const padre = document.getElementById("zona-2");
@@ -31,18 +33,31 @@ export class AppComponent implements OnInit {
         this.clickEvent(e.target.id);
       }
     });
+    padre.addEventListener('mouseup', (e) => {
+      var element = <HTMLElement>e.target;
+      if (element.tagName === 'path' || element instanceof HTMLImageElement) {
+        this.flag = element.id;
+        this.detectarClicDerecho(e);
+      }
+    });
+    this.cerrarMenuContextual();
   }
 
-  clickEvent(id) {
-    this.startEnd = !this.startEnd;
-    if (this.startEnd) {
-      this.origen = id;
-    } else {
-      this.destino = id;
-      this.contadorLineas += 1;
-      let idLinea = this.origen + "_" + this.destino;
-      document.getElementById("svg").innerHTML += "<path id='" + idLinea + "' d='M0 0' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
-      this.connectElements(document.getElementById("svg"), document.getElementById(idLinea), document.getElementById(this.origen), document.getElementById(this.destino));
+  detectarClicDerecho(event) {
+    if (event.which === 3) {
+      this.estiloMenu = {
+        'display': 'block',
+        'position': 'absolute',
+        'left.px': event.clientX,
+        'top.px': event.clientY
+      }
+
+    }
+  }
+
+  cerrarMenuContextual() {
+    this.estiloMenu = {
+      'display': 'none'
     }
   }
 
@@ -78,6 +93,19 @@ export class AppComponent implements OnInit {
     } else {
       (<HTMLCanvasElement>document.getElementById(idElemento)).style.left = event.clientX.toString().concat("px");
       (<HTMLCanvasElement>document.getElementById(idElemento)).style.top = event.clientY.toString().concat("px");
+    }
+  }
+
+  clickEvent(id) {
+    this.startEnd = !this.startEnd;
+    if (this.startEnd) {
+      this.origen = id;
+    } else {
+      this.destino = id;
+      this.contadorLineas += 1;
+      let idLinea = this.origen + "_" + this.destino;
+      document.getElementById("svg").innerHTML += "<path id='" + idLinea + "' d='M0 0' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
+      this.connectElements(document.getElementById("svg"), document.getElementById(idLinea), document.getElementById(this.origen), document.getElementById(this.destino));
     }
   }
 
@@ -147,6 +175,10 @@ export class AppComponent implements OnInit {
 
   absolute(x) {
     return (x < 0) ? -x : x;
+  }
+
+  borrarLinea(event) {
+    document.getElementById(this.flag).remove()
   }
 
 }

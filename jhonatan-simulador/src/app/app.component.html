@@ -8,7 +8,7 @@
   <title>Document</title>
 </head>
 
-<body>
+<body oncontextmenu="return false">
   <div class="zona-1" id="zona-1">
     <h4 style="text-align: center;">-- Nodos --</h4>
     <hr>
@@ -24,6 +24,12 @@
       <svg id="svg" width="0" height="0">
       </svg>
     </div>
+  </div>
+  <div id="contextmenu" class="contextmenu" [ngStyle]="estiloMenu" (clickOutside)="cerrarMenuContextual()"
+    (mouseleave)="cerrarMenuContextual()">
+    <ul class="menu">
+      <li (click)="borrarLinea($event)">Borrar</li>
+    </ul>
   </div>
 </body>
 
