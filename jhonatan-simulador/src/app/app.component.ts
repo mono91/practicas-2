@@ -41,6 +41,10 @@ export class AppComponent implements OnInit {
       }
     });
     this.cerrarMenuContextual();
+    var altoMenu = document.getElementById('barra-menu').clientHeight.toString().concat('px');
+    document.getElementById('zona-1').style.top = altoMenu;
+    document.getElementById('zona-2').style.top = altoMenu;
+
   }
 
   detectarClicDerecho(event) {
@@ -126,12 +130,15 @@ export class AppComponent implements OnInit {
     // calculate path's start (x,y)  coords
     // we want the x coordinate to visually result in the element's mid point
     var offsetX = document.getElementById('zona-1').offsetWidth;
-    var startX = startElem.offsetLeft + 0.5 * startElem.offsetWidth - svgLeft - offsetX;    // x = left offset + 0.5*width - svg's left offset
-    var startY = startElem.offsetTop + startElem.offsetHeight - svgTop - 14;        // y = top offset + height - svg's top offset
+    var offsetY = document.getElementById('barra-menu').clientHeight;
+    var ajusteX = 8;
+    var ajusteY = 11;
+    var startX = startElem.offsetLeft + 0.5 * startElem.offsetWidth - ajusteX - svgLeft - offsetX;    // x = left offset + 0.5*width - svg's left offset
+    var startY = startElem.offsetTop + startElem.offsetHeight - svgTop - ajusteY - offsetY;        // y = top offset + height - svg's top offset
 
     // calculate path's end (x,y) coords
-    var endX = endElem.offsetLeft + 0.5 * endElem.offsetWidth - svgLeft - offsetX;
-    var endY = endElem.offsetTop - svgTop - 14;
+    var endX = endElem.offsetLeft + 0.5 * endElem.offsetWidth - ajusteX - svgLeft - offsetX;
+    var endY = endElem.offsetTop - svgTop - ajusteY - offsetY;
 
     // call function for drawing the path
     this.drawPath(svg, path, startX, startY, endX, endY);

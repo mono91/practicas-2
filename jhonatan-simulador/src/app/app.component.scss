@@ -1,3 +1,7 @@
+* {
+    margin: 0;
+}
+
 .element {
     max-width: 50%;
     display: block; // Centrar imágen
@@ -14,6 +18,8 @@
     margin: 10px;
     height: 100%;
     width: 10%;
+    font-family: 'Anek Malayalam', sans-serif;
+    font-family: 'Patua One', cursive;
 }
 
 .zona-2 {
@@ -41,7 +47,6 @@
     font: inherit;
     border: 0;
     padding: 10px 30px 10px 15px;
-    width: 100%;
     display: flex;
     cursor: pointer;
     align-items: center;
@@ -61,4 +66,24 @@
 
 ul {
     list-style: none;
+}
+
+.barra-menu {
+    width: 100%;
+    background: blanchedalmond;
+}
+
+.opciones-menu {
+    display: inline-block;
+    background-color: skyblue;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 20px;
+    font-family: 'Anek Malayalam', sans-serif;
+    font-family: 'Patrick Hand', cursive;
+}
+
+.opciones-menu:hover {
+    background-color: blue;
 }
