@@ -12,8 +12,13 @@ export class AppComponent implements OnInit {
   private origen: string;
   private destino: string;
   private contadorLineas: number = 0;
-  private estiloMenu: any = {}
+  public estiloMenu: any = {}
   private flag = null;
+  public imagenes: any;
+
+  constructor() {
+    this.imagenes = ["laptot", "fibra", "modem-adsl", "fabry-perot", "dfb", "vcsel", "pigtail", "splitter", "conector"];
+  }
 
   ngOnInit() {
     const padre = document.getElementById("zona-2");
@@ -77,7 +82,7 @@ export class AppComponent implements OnInit {
 
   soltar(event) {
     let idElemento = event.dataTransfer.getData('id');
-    if (document.getElementById(idElemento).parentElement.classList.contains('zona-1')) {
+    if (document.getElementById(idElemento).parentElement.classList.contains('grid-zona-1')) {
       if (this.numeroCopiasNodoDiccionario[idElemento] == undefined) {
         this.numeroCopiasNodoDiccionario[idElemento] = 1;
       } else {

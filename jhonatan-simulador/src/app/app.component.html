@@ -21,12 +21,10 @@
   <div class="zona-1" id="zona-1">
     <h4 style="text-align: center;">-- Nodos --</h4>
     <hr>
-    <img class="element" id="pc" src="assets/img/pc.png" (dragstart)="arrastrar($event)">
-    <img class="element" id="cable" src="assets/img/cable.png" (dragstart)="arrastrar($event)">
-    <img class="element" id="modem" src="assets/img/modem.png" (dragstart)="arrastrar($event)">
-    <img class="element" id="cable-corto" src="assets/img/cable-corto.png" (dragstart)="arrastrar($event)">
-    <img class="element" id="pila" src="assets/img/pila.png" (dragstart)="arrastrar($event)">
-    <img class="element" id="tarjeta-gpon" src="assets/img/tarjeta-gpon.png" (dragstart)="arrastrar($event)">
+    <div *ngFor="let imagen of imagenes" class="grid-zona-1">
+      <img class="element" id={{imagen}} src="assets/img/{{imagen}}.png" (dragstart)="arrastrar($event)">
+    </div>
+
   </div>
   <div class="zona-2" id="zona-2">
     <div id="svgContainer" style="margin: 50px 50px;">
