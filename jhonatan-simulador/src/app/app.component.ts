@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Chart, registerables } from 'chart.js';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,7 @@ export class AppComponent implements OnInit {
 
   constructor() {
     this.imagenes = ["laptot", "fibra", "modem-adsl", "fabry-perot", "dfb", "vcsel", "pigtail", "splitter", "conector"];
+    Chart.register(...registerables);
   }
 
   ngOnInit() {
@@ -49,6 +51,7 @@ export class AppComponent implements OnInit {
     var altoMenu = document.getElementById('barra-menu').clientHeight.toString().concat('px');
     document.getElementById('zona-1').style.top = altoMenu;
     document.getElementById('zona-2').style.top = altoMenu;
+    document.getElementById('zona-3').style.top = altoMenu;
 
   }
 
@@ -191,6 +194,54 @@ export class AppComponent implements OnInit {
 
   borrarLinea(event) {
     document.getElementById(this.flag).remove()
+  }
+
+  cerrar() {
+    console.log("cerrando canvas");
+
+    document.getElementById('zona-2').style.display = 'block';
+    document.getElementById('zona-3').style.display = 'none';
+  }
+
+  graficar() {
+    document.getElementById('zona-2').style.display = 'none';
+    document.getElementById('zona-3').style.display = 'block';
+    const canvas = <HTMLCanvasElement>document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+          label: '# of Hijos',
+          data: [12, 19, 3, 5, 2, 3],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
   }
 
 }

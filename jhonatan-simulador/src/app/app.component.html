@@ -19,7 +19,7 @@
     <div class="dropdown">
       <li class="opciones-menu">Simulacion</li>
       <div class="dropdown-child">
-        <button class="opciones-menu">Ejecutar simulacion</button>
+        <button class="opciones-menu" (click)="graficar()">Ejecutar simulacion</button>
       </div>
     </div>
   </div>
@@ -29,13 +29,16 @@
     <div *ngFor="let imagen of imagenes" class="grid-zona-1">
       <img class="element" id={{imagen}} src="assets/img/{{imagen}}.png" (dragstart)="arrastrar($event)">
     </div>
-
   </div>
   <div class="zona-2" id="zona-2">
     <div id="svgContainer" style="margin: 50px 50px;">
       <svg id="svg" width="0" height="0">
       </svg>
     </div>
+  </div>
+  <div class="zona-3" id="zona-3">
+    <canvas id="canvas" class="canvas"></canvas>
+    <button (click)="cerrar()">X</button>
   </div>
   <div id="contextmenu" class="contextmenu" [ngStyle]="estiloMenu" (clickOutside)="cerrarMenuContextual()"
     (mouseleave)="cerrarMenuContextual()">
