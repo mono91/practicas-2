@@ -13,12 +13,12 @@ export class AppComponent implements OnInit {
   private origen: string;
   private destino: string;
   private contadorLineas: number = 0;
-  public estiloMenu: any = {}
+  public estiloMenu: any = {};
   private flag = null;
   public imagenes: any;
 
   constructor() {
-    this.imagenes = ["laptot", "fibra", "modem-adsl", "fabry-perot", "dfb", "vcsel", "pigtail", "splitter", "conector"];
+    this.imagenes = ["laptot", "fibra", "modem-adsl", "fabry-perot", "dfb", "vcsel", "amplificador-optico", "pigtail", "splitter", "conector"];
     Chart.register(...registerables);
   }
 
@@ -116,9 +116,49 @@ export class AppComponent implements OnInit {
       this.destino = id;
       this.contadorLineas += 1;
       let idLinea = this.origen + "_" + this.destino;
-      document.getElementById("svg").innerHTML += "<path id='" + idLinea + "' d='M0 0' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
-      this.connectElements(document.getElementById("svg"), document.getElementById(idLinea), document.getElementById(this.origen), document.getElementById(this.destino));
+      let linea = this.validarLinea(document.getElementById(this.origen), document.getElementById(this.destino));
+      if (linea) {
+        this.drawLine(document.getElementById(this.origen), document.getElementById(this.destino), idLinea);
+      } else {
+        document.getElementById("svg").innerHTML += "<path id='" + idLinea + "' d='M0 0' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
+        this.connectElements(document.getElementById("svg"), document.getElementById(idLinea), document.getElementById(this.origen), document.getElementById(this.destino));
+      }
     }
+  }
+
+  validarLinea(startElement, endElement) {
+    let startTop = startElement.offsetTop;
+    let startBottom = startTop + startElement.height;
+    let endTop = endElement.offsetTop;
+    let endBottom = endTop + startElement.height;
+    return (endTop > startTop && endTop < startBottom || endBottom > startTop && endBottom < startBottom) ? true : false;
+  }
+
+  drawLine(startElement, endElement, idLinea) {
+    console.log("Debe dibujar una linea recta");
+    let startLeft = startElement.offsetLeft;
+    let endLeft = endElement.offsetLeft;
+    if (startLeft > endLeft) {
+      let auxiliar = startElement;
+      startElement = endElement;
+      endElement = auxiliar;
+    }
+    let x1 = startElement.offsetLeft + startElement.offsetWidth;
+    let y1 = startElement.offsetTop + startElement.offsetHeight / 2;
+    let x2 = endElement.offsetLeft;
+    let y2 = endElement.offsetTop + endElement.offsetHeight / 2;
+    document.getElementById("svg").innerHTML += "<line id='" + idLinea + "' x1='" + x1 + "' y1='" + y1 + "' x2='" + x2 + "' y2='" + y2 + "' style='stroke:rgb(255,0,0);stroke-width:2' />";
+    // get the path's stroke width (if one wanted to be  really precize, one could use half the stroke size)
+    let line = document.getElementById(idLinea);
+    let stroke = parseFloat(line.getAttribute("stroke-width"));
+    // check if the svg is big enough to draw the path, if not, set heigh/width
+    let svg = document.getElementById("svg");
+    let startX = x1;
+    let endX = x2;
+    let endY = y2;
+    if (svg.getAttribute("height") < endY) svg.setAttribute("height", endY);
+    if (svg.getAttribute("width") < (startX + stroke)) svg.setAttribute("width", (startX + stroke));
+    if (svg.getAttribute("width") < (endX + stroke)) svg.setAttribute("width", (endX + stroke));
   }
 
   connectElements(svg, path, startElem, endElem) {
@@ -197,8 +237,6 @@ export class AppComponent implements OnInit {
   }
 
   cerrar() {
-    console.log("cerrando canvas");
-
     document.getElementById('zona-2').style.display = 'block';
     document.getElementById('zona-3').style.display = 'none';
   }
