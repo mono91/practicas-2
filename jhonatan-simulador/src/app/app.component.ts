@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
     });
     padre.addEventListener('mouseup', (e) => {
       var element = <HTMLElement>e.target;
-      if (element.tagName === 'path' || element instanceof HTMLImageElement) {
+      if (element.tagName === 'path' || element.tagName === 'line' || element instanceof HTMLImageElement) {
         this.flag = element.id;
         this.detectarClicDerecho(e);
       }
@@ -145,7 +145,8 @@ export class AppComponent implements OnInit {
     }
     let alfa = 9;
     let offsetX = document.getElementById('zona-1').offsetWidth + alfa;
-    let offsetY = document.documentElement.offsetHeight;
+    let beta = 4;
+    let offsetY = document.documentElement.offsetHeight - beta;
     let x1 = startElement.offsetLeft + startElement.offsetWidth - offsetX;
     let y1 = startElement.offsetTop + (startElement.offsetHeight / 2) - offsetY;
     let x2 = endElement.offsetLeft - offsetX;
@@ -153,8 +154,8 @@ export class AppComponent implements OnInit {
     document.getElementById("svg").innerHTML += "<line id='" + idLinea + "' x1='" + x1 + "' y1='" + y1 + "' x2='" + x2 + "' y2='" + y2 + "' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
     // get the line's stroke width (if one wanted to be  really precize, one could use half the stroke size)
     let line = document.getElementById(idLinea);
-    let beta = 3;
-    let stroke = parseFloat(line.getAttribute("stroke-width")) + beta;
+    let gama = 3;
+    let stroke = parseFloat(line.getAttribute("stroke-width")) + gama;
     // check if the svg is big enough to draw the path, if not, set heigh/width
     let w = x2; let h = y2;
     if (x1 > x2) w = x1;

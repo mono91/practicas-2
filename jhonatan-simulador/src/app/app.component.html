@@ -43,7 +43,7 @@
   <div id="contextmenu" class="contextmenu" [ngStyle]="estiloMenu" (clickOutside)="cerrarMenuContextual()"
     (mouseleave)="cerrarMenuContextual()">
     <ul class="menu">
-      <li (click)="borrarLinea($event)">Borrar</li>
+      <li class="borrar" (click)="borrarLinea($event)"><b>Borrar</b></li>
     </ul>
   </div>
 </body>
