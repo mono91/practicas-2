@@ -135,30 +135,33 @@ export class AppComponent implements OnInit {
   }
 
   drawLine(startElement, endElement, idLinea) {
-    console.log("Debe dibujar una linea recta");
-    let startLeft = startElement.offsetLeft;
-    let endLeft = endElement.offsetLeft;
-    if (startLeft > endLeft) {
+    // Validar cuál elemento esta más a la izquierda de la pantalla
+    let startElementLeft = startElement.offsetLeft;
+    let endElementLeft = endElement.offsetLeft;
+    if (startElementLeft > endElementLeft) {
       let auxiliar = startElement;
       startElement = endElement;
       endElement = auxiliar;
     }
-    let x1 = startElement.offsetLeft + startElement.offsetWidth;
-    let y1 = startElement.offsetTop + startElement.offsetHeight / 2;
-    let x2 = endElement.offsetLeft;
-    let y2 = endElement.offsetTop + endElement.offsetHeight / 2;
-    document.getElementById("svg").innerHTML += "<line id='" + idLinea + "' x1='" + x1 + "' y1='" + y1 + "' x2='" + x2 + "' y2='" + y2 + "' style='stroke:rgb(255,0,0);stroke-width:2' />";
-    // get the path's stroke width (if one wanted to be  really precize, one could use half the stroke size)
+    let alfa = 9;
+    let offsetX = document.getElementById('zona-1').offsetWidth + alfa;
+    let offsetY = document.documentElement.offsetHeight;
+    let x1 = startElement.offsetLeft + startElement.offsetWidth - offsetX;
+    let y1 = startElement.offsetTop + (startElement.offsetHeight / 2) - offsetY;
+    let x2 = endElement.offsetLeft - offsetX;
+    let y2 = endElement.offsetTop + (endElement.offsetHeight / 2) - offsetY;
+    document.getElementById("svg").innerHTML += "<line id='" + idLinea + "' x1='" + x1 + "' y1='" + y1 + "' x2='" + x2 + "' y2='" + y2 + "' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
+    // get the line's stroke width (if one wanted to be  really precize, one could use half the stroke size)
     let line = document.getElementById(idLinea);
-    let stroke = parseFloat(line.getAttribute("stroke-width"));
+    let beta = 3;
+    let stroke = parseFloat(line.getAttribute("stroke-width")) + beta;
     // check if the svg is big enough to draw the path, if not, set heigh/width
+    let w = x2; let h = y2;
+    if (x1 > x2) w = x1;
+    if (y1 > y2) h = y1;
     let svg = document.getElementById("svg");
-    let startX = x1;
-    let endX = x2;
-    let endY = y2;
-    if (svg.getAttribute("height") < endY) svg.setAttribute("height", endY);
-    if (svg.getAttribute("width") < (startX + stroke)) svg.setAttribute("width", (startX + stroke));
-    if (svg.getAttribute("width") < (endX + stroke)) svg.setAttribute("width", (endX + stroke));
+    if (parseFloat(svg.getAttribute("width")) < (w + stroke)) svg.setAttribute("width", String(w + stroke));
+    if (parseFloat(svg.getAttribute("height")) < (h + stroke)) svg.setAttribute("height", String(h + stroke));
   }
 
   connectElements(svg, path, startElem, endElem) {
