@@ -151,7 +151,9 @@ export class AppComponent implements OnInit {
     let y1 = startElement.offsetTop + (startElement.offsetHeight / 2) - offsetY;
     let x2 = endElement.offsetLeft - offsetX;
     let y2 = endElement.offsetTop + (endElement.offsetHeight / 2) - offsetY;
-    document.getElementById("svg").innerHTML += "<line id='" + idLinea + "' x1='" + x1 + "' y1='" + y1 + "' x2='" + x2 + "' y2='" + y2 + "' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
+    let x3 = x1 + ((x2 - x1) / 2); // Punto medio entre el punto x1 y x2
+    let path = "<path d='M" + x1 + "," + y1 + " L" + x3 + "," + y1 + " L" + x3 + "," + y2 + " L" + x2 + "," + y2 + "' id='" + idLinea + "' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
+    document.getElementById("svg").innerHTML += path;
     // get the line's stroke width (if one wanted to be  really precize, one could use half the stroke size)
     let line = document.getElementById(idLinea);
     let gama = 3;
