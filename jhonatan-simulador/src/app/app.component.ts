@@ -55,6 +55,22 @@ export class AppComponent implements OnInit {
 
   }
 
+  restaurarLienzo() {
+    var hijos = document.getElementById("zona-2").children;
+    var length = hijos.length;
+    for (let i = length - 1; i >= 0; i--) {
+      if (hijos[i].id != 'svgContainer') {
+        hijos[i].remove();
+      }
+    }
+    var hijos2 = document.getElementById("svg").children;
+    var length2 = hijos2.length
+    for (let j = length2 - 1; j >= 0; j--) {
+      hijos2[j].remove();
+    }
+
+  }
+
   detectarClicDerecho(event) {
     if (event.which === 3) {
       this.estiloMenu = {
@@ -63,7 +79,6 @@ export class AppComponent implements OnInit {
         'left.px': event.clientX,
         'top.px': event.clientY
       }
-
     }
   }
 
@@ -113,6 +128,9 @@ export class AppComponent implements OnInit {
     if (this.startEnd) {
       this.origen = id;
     } else {
+      if (this.origen == id) {
+        return;
+      }
       this.destino = id;
       this.contadorLineas += 1;
       let idLinea = this.origen + "_" + this.destino;
@@ -152,7 +170,7 @@ export class AppComponent implements OnInit {
     let x2 = endElement.offsetLeft - offsetX;
     let y2 = endElement.offsetTop + (endElement.offsetHeight / 2) - offsetY;
     let x3 = x1 + ((x2 - x1) / 2); // Punto medio entre el punto x1 y x2
-    let path = "<path d='M" + x1 + "," + y1 + " L" + x3 + "," + y1 + " L" + x3 + "," + y2 + " L" + x2 + "," + y2 + "' id='" + idLinea + "' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
+    let path = "<path d='M" + x1 + "," + y1 + " L" + x3 + "," + y1 + " L" + x3 + "," + y2 + " L" + x2 + "," + y2 + "' id='" + idLinea + "' stroke-width='0.3em' style='stroke:#555; fill:none;' />";
     document.getElementById("svg").innerHTML += path;
     // get the line's stroke width (if one wanted to be  really precize, one could use half the stroke size)
     let line = document.getElementById(idLinea);
@@ -201,7 +219,8 @@ export class AppComponent implements OnInit {
 
   drawPath(svg, path, startX, startY, endX, endY) {
     // get the path's stroke width (if one wanted to be  really precize, one could use half the stroke size)
-    var stroke = parseFloat(path.getAttribute("stroke-width"));
+    var gama = 3;
+    var stroke = parseFloat(path.getAttribute("stroke-width")) + gama;
     // check if the svg is big enough to draw the path, if not, set heigh/width
     if (svg.getAttribute("height") < endY) svg.setAttribute("height", endY);
     if (svg.getAttribute("width") < (startX + stroke)) svg.setAttribute("width", (startX + stroke));
@@ -257,7 +276,7 @@ export class AppComponent implements OnInit {
       data: {
         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
         datasets: [{
-          label: '# of Hijos',
+          label: 'Variable 1',
           data: [12, 19, 3, 5, 2, 3],
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',

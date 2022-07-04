@@ -15,7 +15,12 @@
 <body oncontextmenu="return false">
   <div class="barra-menu" id="barra-menu">
     <li class="opciones-menu">Inicio</li>
-    <li class="opciones-menu">Opciones</li>
+    <div class="dropdown">
+      <li class="opciones-menu">Opciones</li>
+      <div class="dropdown-child">
+        <button class="opciones-menu" (click)="restaurarLienzo()">Limpiar área de trabajo</button>
+      </div>
+    </div>
     <div class="dropdown">
       <li class="opciones-menu">Simulacion</li>
       <div class="dropdown-child">
