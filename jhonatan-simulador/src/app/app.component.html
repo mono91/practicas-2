@@ -15,16 +15,17 @@
 <body oncontextmenu="return false">
   <div class="barra-menu" id="barra-menu">
     <li class="opciones-menu">Inicio</li>
-    <div class="dropdown">
-      <li class="opciones-menu">Opciones</li>
-      <div class="dropdown-child">
-        <button class="opciones-menu" (click)="restaurarLienzo()">Limpiar area de trabajo</button>
-      </div>
-    </div>
+    <li class="opciones-menu">Opciones</li>
     <div class="dropdown">
       <li class="opciones-menu">Simulacion</li>
       <div class="dropdown-child">
         <button class="opciones-menu" (click)="graficar()">Ejecutar simulacion</button>
+      </div>
+    </div>
+    <div class="dropdown">
+      <li class="opciones-menu">Esquematico</li>
+      <div class="dropdown-child">
+        <button class="opciones-menu" (click)="restaurarLienzo()">Eliminar esquematico</button>
       </div>
     </div>
   </div>
@@ -48,7 +49,9 @@
   <div id="contextmenu" class="contextmenu" [ngStyle]="estiloMenu" (clickOutside)="cerrarMenuContextual()"
     (mouseleave)="cerrarMenuContextual()">
     <ul class="menu">
-      <li class="borrar" (click)="borrarLinea($event)"><b>Borrar</b></li>
+      <li class="borrar" (click)="borrarLinea($event)">
+        <p>Borrar</p>
+      </li>
     </ul>
   </div>
 </body>
