@@ -24,35 +24,38 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     const padre = document.getElementById("zona-2");
-    padre.addEventListener('dragstart', (e) => {
+    const eventos = ["dragstart", "dragover", "drop", "click", "mouseup"]
+    const funciones = [(e) => {
       if (e.target instanceof HTMLImageElement) {
         this.arrastrar(e);
       }
-    });
-    padre.addEventListener('dragover', (e) => {
+    }, (e) => {
       this.permitirSoltar(e);
-    });
-    padre.addEventListener('drop', (e) => {
+    }, (e) => {
       this.soltar(e);
-    });
-    padre.addEventListener('click', (e) => {
+    }, (e) => {
       if (e.target instanceof HTMLImageElement) {
         this.clickEvent(e.target.id);
       }
-    });
-    padre.addEventListener('mouseup', (e) => {
+    }, (e) => {
       var element = <HTMLElement>e.target;
       if (element.tagName === 'path' || element.tagName === 'line' || element instanceof HTMLImageElement) {
         this.flag = element.id;
         this.detectarClicDerecho(e);
       }
-    });
+    }]
+    this.addListenerMulti(padre, eventos, funciones);
     this.cerrarMenuContextual();
     var altoMenu = document.getElementById('barra-menu').clientHeight.toString().concat('px');
     document.getElementById('zona-1').style.top = altoMenu;
     document.getElementById('zona-2').style.top = altoMenu;
     document.getElementById('zona-3').style.top = altoMenu;
+  }
 
+  addListenerMulti(element, eventNames, listener) {
+    for (var i = 0, iLen = eventNames.length; i < iLen; i++) {
+      element.addEventListener(eventNames[i], listener[i], false);
+    }
   }
 
   restaurarLienzo() {
@@ -68,7 +71,6 @@ export class AppComponent implements OnInit {
     for (let j = length2 - 1; j >= 0; j--) {
       hijos2[j].remove();
     }
-
   }
 
   detectarClicDerecho(event) {
@@ -100,24 +102,25 @@ export class AppComponent implements OnInit {
 
   soltar(event) {
     let idElemento = event.dataTransfer.getData('id');
+    // Verificar si la zona de origén del elemento es la zona con la clase grid-zona-1
     if (document.getElementById(idElemento).parentElement.classList.contains('grid-zona-1')) {
-      if (this.numeroCopiasNodoDiccionario[idElemento] == undefined) {
+      if (this.numeroCopiasNodoDiccionario[idElemento] == undefined) { // Variable incremental para cada nodo
         this.numeroCopiasNodoDiccionario[idElemento] = 1;
       } else {
-        let mumeroCopiasNodo = this.numeroCopiasNodoDiccionario[idElemento];
+        let mumeroCopiasNodo = this.numeroCopiasNodoDiccionario[idElemento]; // A partir del nùmero 2 (2 copias)
         mumeroCopiasNodo += 1;
         this.numeroCopiasNodoDiccionario[idElemento] = mumeroCopiasNodo;
       }
-      let nodoCopia = <HTMLCanvasElement>document.getElementById(idElemento).cloneNode(true);
+      let nodoCopia = <HTMLCanvasElement>document.getElementById(idElemento).cloneNode(true); // Clonar el nodo
       nodoCopia.id = idElemento.concat(this.numeroCopiasNodoDiccionario[idElemento].toString());
       nodoCopia.classList.remove('element');
-      nodoCopia.width = event.dataTransfer.getData('width');
-      nodoCopia.height = event.dataTransfer.getData('height');
-      nodoCopia.style.position = 'fixed';
-      nodoCopia.style.left = event.clientX.toString().concat("px");
-      nodoCopia.style.top = event.clientY.toString().concat("px");
-      document.getElementById('zona-2').append(nodoCopia);
-    } else {
+      nodoCopia.width = event.dataTransfer.getData('width'); // Ancho nodo clonado, que sea igual al de su artefacto
+      nodoCopia.height = event.dataTransfer.getData('height'); // Alto nodo clonado, que sea igual al de su artefacto
+      nodoCopia.style.position = 'fixed'; // Esto lo debo de modificar porque no permite que la aplicaciòn funciones correctamente
+      nodoCopia.style.left = event.clientX.toString().concat("px"); // Ajuste de posiciòn en X
+      nodoCopia.style.top = event.clientY.toString().concat("px"); // Ajuste de posiciòn en Y
+      document.getElementById('zona-2').append(nodoCopia); // Integrar dentro de la zona-2 el resultado final
+    } else { // Si el nodo ya existe en la zona-2 reubicarlo en una nueva posiciòn
       (<HTMLCanvasElement>document.getElementById(idElemento)).style.left = event.clientX.toString().concat("px");
       (<HTMLCanvasElement>document.getElementById(idElemento)).style.top = event.clientY.toString().concat("px");
     }
