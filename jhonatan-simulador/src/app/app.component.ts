@@ -126,12 +126,16 @@ export class AppComponent implements OnInit {
     }
   }
 
+  // Metodo para dibujar una linea
   clickEvent(id) {
     this.startEnd = !this.startEnd;
     if (this.startEnd) {
       this.origen = id;
     } else {
       if (this.origen == id) {
+        console.log("No se puede conectar a el mismo");
+        var audio = new Audio('assets/audios/nspcaem.mp3');
+        audio.play();
         return;
       }
       this.destino = id;
