@@ -13,6 +13,7 @@
 </head>
 
 <body oncontextmenu="return false">
+
   <div class="barra-menu" id="barra-menu">
     <li class="opciones-menu">Inicio</li>
     <li class="opciones-menu">Opciones</li>
@@ -29,31 +30,35 @@
       </div>
     </div>
   </div>
-  <div class="zona-1" id="zona-1">
-    <h4 style="text-align: center;">-- Nodos --</h4>
-    <hr>
-    <div *ngFor="let imagen of imagenes" class="grid-zona-1">
-      <img class="element" id={{imagen}} src="assets/img/{{imagen}}.png" (dragstart)="arrastrar($event)">
+
+  <div class="row">
+    <div class="zona-1" id="zona-1">
+      <h4 style="text-align: center;">-- Nodos --</h4>
+      <hr>
+      <div *ngFor="let imagen of imagenes" class="grid-zona-1">
+        <img class="element" id={{imagen}} src="assets/img/{{imagen}}.png" (dragstart)="arrastrar($event)">
+      </div>
+    </div>
+    <div class="zona-2" id="zona-2">
+      <div id="svgContainer" style="margin: 0px 0px;">
+        <svg id="svg" width="0" height="0">
+        </svg>
+      </div>
+    </div>
+    <div class="zona-3" id="zona-3">
+      <canvas id="canvas" class="canvas"></canvas>
+      <button (click)="cerrarGrafica()">X</button>
+    </div>
+    <div id="contextmenu" class="contextmenu" [ngStyle]="estiloMenu" (clickOutside)="cerrarMenuContextual()"
+      (mouseleave)="cerrarMenuContextual()">
+      <ul class="menu">
+        <li class="borrar" (click)="borrarLinea($event)">
+          <p>Borrar</p>
+        </li>
+      </ul>
     </div>
   </div>
-  <div class="zona-2" id="zona-2">
-    <div id="svgContainer" style="margin: 0px 0px;">
-      <svg id="svg" width="0" height="0">
-      </svg>
-    </div>
-  </div>
-  <div class="zona-3" id="zona-3">
-    <canvas id="canvas" class="canvas"></canvas>
-    <button (click)="cerrar()">X</button>
-  </div>
-  <div id="contextmenu" class="contextmenu" [ngStyle]="estiloMenu" (clickOutside)="cerrarMenuContextual()"
-    (mouseleave)="cerrarMenuContextual()">
-    <ul class="menu">
-      <li class="borrar" (click)="borrarLinea($event)">
-        <p>Borrar</p>
-      </li>
-    </ul>
-  </div>
+
 </body>
 
 </html>

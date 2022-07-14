@@ -41,15 +41,11 @@ export class AppComponent implements OnInit {
       var element = <HTMLElement>e.target;
       if (element.tagName === 'path' || element.tagName === 'line' || element instanceof HTMLImageElement) {
         this.flag = element.id;
-        this.detectarClicDerecho(e);
+        this.clicDerechoElemento(e);
       }
     }]
     this.addListenerMulti(padre, eventos, funciones);
     this.cerrarMenuContextual();
-    var altoMenu = document.getElementById('barra-menu').clientHeight.toString().concat('px');
-    document.getElementById('zona-1').style.top = altoMenu;
-    document.getElementById('zona-2').style.top = altoMenu;
-    document.getElementById('zona-3').style.top = altoMenu;
   }
 
   addListenerMulti(element, eventNames, listener) {
@@ -73,7 +69,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  detectarClicDerecho(event) {
+  clicDerechoElemento(event) {
     if (event.which === 3) {
       this.estiloMenu = {
         'display': 'block',
@@ -116,7 +112,7 @@ export class AppComponent implements OnInit {
       nodoCopia.classList.remove('element');
       nodoCopia.width = event.dataTransfer.getData('width'); // Ancho nodo clonado, que sea igual al de su artefacto
       nodoCopia.height = event.dataTransfer.getData('height'); // Alto nodo clonado, que sea igual al de su artefacto
-      nodoCopia.style.position = 'fixed'; // Esto lo debo de modificar porque no permite que la aplicaciòn funciones correctamente
+      nodoCopia.style.position = 'absolute'; // Para que las propiedades left y top funcionen
       nodoCopia.style.left = event.clientX.toString().concat("px"); // Ajuste de posiciòn en X
       nodoCopia.style.top = event.clientY.toString().concat("px"); // Ajuste de posiciòn en Y
       document.getElementById('zona-2').append(nodoCopia); // Integrar dentro de la zona-2 el resultado final
@@ -141,9 +137,9 @@ export class AppComponent implements OnInit {
       this.destino = id;
       this.contadorLineas += 1;
       let idLinea = this.origen + "_" + this.destino;
-      let linea = this.validarLinea(document.getElementById(this.origen), document.getElementById(this.destino));
+      let linea = this.verificarCamino(document.getElementById(this.origen), document.getElementById(this.destino));
       if (linea) {
-        this.drawLine(document.getElementById(this.origen), document.getElementById(this.destino), idLinea);
+        this.dibujarCamino1(document.getElementById(this.origen), document.getElementById(this.destino), idLinea);
       } else {
         document.getElementById("svg").innerHTML += "<path id='" + idLinea + "' d='M0 0' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
         this.connectElements(document.getElementById("svg"), document.getElementById(idLinea), document.getElementById(this.origen), document.getElementById(this.destino));
@@ -151,7 +147,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  validarLinea(startElement, endElement) {
+  verificarCamino(startElement, endElement) {
     let startTop = startElement.offsetTop;
     let startBottom = startTop + startElement.height;
     let endTop = endElement.offsetTop;
@@ -159,7 +155,7 @@ export class AppComponent implements OnInit {
     return (endTop > startTop && endTop < startBottom || endBottom > startTop && endBottom < startBottom) ? true : false;
   }
 
-  drawLine(startElement, endElement, idLinea) {
+  dibujarCamino1(startElement, endElement, idLinea) {
     // Validar cuál elemento esta más a la izquierda de la pantalla
     let startElementLeft = startElement.offsetLeft;
     let endElementLeft = endElement.offsetLeft;
@@ -168,14 +164,10 @@ export class AppComponent implements OnInit {
       startElement = endElement;
       endElement = auxiliar;
     }
-    let alfa = 9;
-    let offsetX = document.getElementById('zona-1').offsetWidth + alfa;
-    let beta = 4;
-    let offsetY = document.documentElement.offsetHeight - beta;
-    let x1 = startElement.offsetLeft + startElement.offsetWidth - offsetX;
-    let y1 = startElement.offsetTop + (startElement.offsetHeight / 2) - offsetY;
-    let x2 = endElement.offsetLeft - offsetX;
-    let y2 = endElement.offsetTop + (endElement.offsetHeight / 2) - offsetY;
+    let x1 = startElement.offsetLeft + startElement.offsetWidth;
+    let y1 = startElement.offsetTop + (startElement.offsetHeight / 2);
+    let x2 = endElement.offsetLeft;
+    let y2 = endElement.offsetTop + (endElement.offsetHeight / 2);
     let x3 = x1 + ((x2 - x1) / 2); // Punto medio entre el punto x1 y x2
     let t = (y2 - y1) / 6;
     let c1 = 0, c2 = 0;
@@ -212,23 +204,19 @@ export class AppComponent implements OnInit {
 
     // calculate path's start (x,y)  coords
     // we want the x coordinate to visually result in the element's mid point
-    var offsetX = document.getElementById('zona-1').offsetWidth;
-    var offsetY = document.getElementById('barra-menu').clientHeight;
-    var ajusteX = 8;
-    var ajusteY = 11;
-    var startX = startElem.offsetLeft + 0.5 * startElem.offsetWidth - ajusteX - svgLeft - offsetX;    // x = left offset + 0.5*width - svg's left offset
-    var startY = startElem.offsetTop + startElem.offsetHeight - svgTop - ajusteY - offsetY;        // y = top offset + height - svg's top offset
+    var startX = startElem.offsetLeft + 0.5 * startElem.offsetWidth - svgLeft;    // x = left offset + 0.5*width - svg's left offset
+    var startY = startElem.offsetTop + startElem.offsetHeight - svgTop;        // y = top offset + height - svg's top offset
 
     // calculate path's end (x,y) coords
-    var endX = endElem.offsetLeft + 0.5 * endElem.offsetWidth - ajusteX - svgLeft - offsetX;
-    var endY = endElem.offsetTop - svgTop - ajusteY - offsetY;
+    var endX = endElem.offsetLeft + 0.5 * endElem.offsetWidth - svgLeft;
+    var endY = endElem.offsetTop - svgTop;
 
     // call function for drawing the path
-    this.drawPath(svg, path, startX, startY, endX, endY);
+    this.dibujarCamino2(svg, path, startX, startY, endX, endY);
 
   }
 
-  drawPath(svg, path, startX, startY, endX, endY) {
+  dibujarCamino2(svg, path, startX, startY, endX, endY) {
     // get the path's stroke width (if one wanted to be  really precize, one could use half the stroke size)
     var gama = 3;
     var stroke = parseFloat(path.getAttribute("stroke-width")) + gama;
@@ -272,7 +260,7 @@ export class AppComponent implements OnInit {
     document.getElementById(this.flag).remove()
   }
 
-  cerrar() {
+  cerrarGrafica() {
     document.getElementById('zona-2').style.display = 'block';
     document.getElementById('zona-3').style.display = 'none';
   }
