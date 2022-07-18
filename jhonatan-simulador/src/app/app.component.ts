@@ -138,10 +138,10 @@ export class AppComponent implements OnInit {
       this.contadorLineas += 1;
       let idLinea = this.origen + "_" + this.destino;
       let linea = this.verificarCamino(document.getElementById(this.origen), document.getElementById(this.destino));
+      document.getElementById("svg").innerHTML += "<path id='" + idLinea + "' d='M0 0' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
       if (linea) {
-        this.dibujarCamino1(document.getElementById(this.origen), document.getElementById(this.destino), idLinea);
+        this.connectElements0(document.getElementById("svg"), document.getElementById(idLinea), document.getElementById(this.origen), document.getElementById(this.destino));
       } else {
-        document.getElementById("svg").innerHTML += "<path id='" + idLinea + "' d='M0 0' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
         this.connectElements(document.getElementById("svg"), document.getElementById(idLinea), document.getElementById(this.origen), document.getElementById(this.destino));
       }
     }
@@ -155,37 +155,68 @@ export class AppComponent implements OnInit {
     return (endTop > startTop && endTop < startBottom || endBottom > startTop && endBottom < startBottom) ? true : false;
   }
 
-  dibujarCamino1(startElement, endElement, idLinea) {
-    // Validar cuál elemento esta más a la izquierda de la pantalla
-    let startElementLeft = startElement.offsetLeft;
-    let endElementLeft = endElement.offsetLeft;
-    if (startElementLeft > endElementLeft) {
-      let auxiliar = startElement;
-      startElement = endElement;
-      endElement = auxiliar;
+  
+  connectElements0(svg, path, startElem, endElem) {
+    var svgContainer = document.getElementById("svgContainer");
+
+    // if first element is lower than the second, swap!
+    if (startElem.offsetTop > endElem.offsetTop) {
+      var temp = startElem;
+      startElem = endElem;
+      endElem = temp;
     }
-    let x1 = startElement.offsetLeft + startElement.offsetWidth;
-    let y1 = startElement.offsetTop + (startElement.offsetHeight / 2);
-    let x2 = endElement.offsetLeft;
-    let y2 = endElement.offsetTop + (endElement.offsetHeight / 2);
-    let x3 = x1 + ((x2 - x1) / 2); // Punto medio entre el punto x1 y x2
-    let t = (y2 - y1) / 6;
-    let c1 = 0, c2 = 0;
-    if (y1 > y2) c2 = 1;
-    if (y1 < y2) c1 = 1;
-    let path = "<path d='M" + x1 + "," + y1 + " L" + (x3 - this.absolute(t)) + "," + y1 + " A25 25 0 0 " + c1 + " " + x3 + " " + (y1 + t) + " L" + x3 + "," + (y2 - t) + " A25 25 0 0 " + c2 + " " + (x3 + this.absolute(t)) + " " + y2 + " L" + x2 + "," + y2 + "' id='" + idLinea + "' stroke-width='0.3em' style='stroke:#555; fill:none;' stroke-linejoin='round' />";
-    document.getElementById("svg").innerHTML += path;
-    // get the line's stroke width (if one wanted to be  really precize, one could use half the stroke size)
-    let line = document.getElementById(idLinea);
-    let gama = 3;
-    let stroke = parseFloat(line.getAttribute("stroke-width")) + gama;
+
+    // get (top, left) corner coordinates of the svg container   
+    var svgTop = svgContainer.offsetTop;
+    var svgLeft = svgContainer.offsetLeft;
+
+    // Ajuste necesario em los puntos iniciales startX, startY, endX, endY
+    var beta = 8;
+
+    // calculate path's start (x,y)  coords
+    // we want the x coordinate to visually result in the element's mid point
+    var startX = startElem.offsetLeft + startElem.offsetWidth - svgLeft - beta;    // x = left offset + 0.5*width - svg's left offset
+    var startY = startElem.offsetTop + 0.5 * startElem.offsetHeight - svgTop - beta;        // y = top offset + height - svg's top offset
+
+    // calculate path's end (x,y) coords
+    var endX = endElem.offsetLeft - svgLeft - beta;
+    var endY = endElem.offsetTop + 0.5 * endElem.offsetHeight - svgTop - beta;
+
+    // call function for drawing the path
+    this.dibujarCamino1(svg, path, startX, startY, endX, endY);
+
+  }
+
+  dibujarCamino1(svg, path, startX, startY, endX, endY) {
+    // get the path's stroke width (if one wanted to be  really precize, one could use half the stroke size)
+    var gama = 10;
+    var stroke = parseFloat(path.getAttribute("stroke-width")) + gama;
     // check if the svg is big enough to draw the path, if not, set heigh/width
-    let w = x2; let h = y2;
-    if (x1 > x2) w = x1;
-    if (y1 > y2) h = y1;
-    let svg = document.getElementById("svg");
-    if (parseFloat(svg.getAttribute("width")) < (w + stroke)) svg.setAttribute("width", String(w + stroke));
-    if (parseFloat(svg.getAttribute("height")) < (h + stroke)) svg.setAttribute("height", String(h + stroke));
+    if (svg.getAttribute("height") < endY) svg.setAttribute("height", endY);
+    if (svg.getAttribute("width") < (startX + stroke)) svg.setAttribute("width", (startX + stroke));
+    if (svg.getAttribute("width") < (endX + stroke)) svg.setAttribute("width", (endX + stroke));
+
+    var deltaX = (endX - startX) * 0.15;
+    var deltaY = (endY - startY) * 0.15;
+    // for further calculations which ever is the shortest distance
+    var delta = deltaY < this.absolute(deltaX) ? deltaY : this.absolute(deltaX);
+
+    // set sweep-flag (counter/clock-wise)
+    // if start element is closer to the left edge,
+    // draw the first arc counter-clockwise, and the second one clock-wise
+    var arc1 = 1; var arc2 = 0;
+    if (startX > endX) {
+      arc1 = 0;
+      arc2 = 1;
+    }
+    // draw tha pipe-like path
+    // 1. move a bit down, 2. arch,  3. move a bit to the right, 4.arch, 5. move down to the end 
+    path.setAttribute("d", "M" + startX + " " + startY +
+      " H" + (startX + delta) +
+      " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 2 * delta ) + " " + (startY +  delta * this.signum(deltaY)) +
+      " V" + (endY - delta * this.signum(deltaY)) +
+      " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (startX + 3 * delta) + " " + endY +
+      " H" + endX);
   }
 
   connectElements(svg, path, startElem, endElem) {
@@ -202,23 +233,27 @@ export class AppComponent implements OnInit {
     var svgTop = svgContainer.offsetTop;
     var svgLeft = svgContainer.offsetLeft;
 
+    // Ajuste necesario em los puntos iniciales startX, startY, endX, endY
+    var beta = 8;
+
     // calculate path's start (x,y)  coords
     // we want the x coordinate to visually result in the element's mid point
-    var startX = startElem.offsetLeft + 0.5 * startElem.offsetWidth - svgLeft;    // x = left offset + 0.5*width - svg's left offset
-    var startY = startElem.offsetTop + startElem.offsetHeight - svgTop;        // y = top offset + height - svg's top offset
+    var startX = startElem.offsetLeft + 0.5 * startElem.offsetWidth - svgLeft - beta;    // x = left offset + 0.5*width - svg's left offset
+    var startY = startElem.offsetTop + startElem.offsetHeight - svgTop - beta;        // y = top offset + height - svg's top offset
 
     // calculate path's end (x,y) coords
-    var endX = endElem.offsetLeft + 0.5 * endElem.offsetWidth - svgLeft;
-    var endY = endElem.offsetTop - svgTop;
+    var endX = endElem.offsetLeft + 0.5 * endElem.offsetWidth - svgLeft - beta;
+    var endY = endElem.offsetTop - svgTop - beta;
 
     // call function for drawing the path
     this.dibujarCamino2(svg, path, startX, startY, endX, endY);
 
   }
 
+
   dibujarCamino2(svg, path, startX, startY, endX, endY) {
     // get the path's stroke width (if one wanted to be  really precize, one could use half the stroke size)
-    var gama = 3;
+    var gama = 10;
     var stroke = parseFloat(path.getAttribute("stroke-width")) + gama;
     // check if the svg is big enough to draw the path, if not, set heigh/width
     if (svg.getAttribute("height") < endY) svg.setAttribute("height", endY);
