@@ -11,6 +11,10 @@
     margin-bottom: 5px;
 }
 
+.footer {
+    float: right;
+}
+
 .borrar {
     text-align: center;
     align-items: flex-start;
@@ -50,6 +54,7 @@
     margin: 0;
     display: none;
     width: 700px;
+    height: 100%;
 }
 
 .menu {

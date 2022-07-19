@@ -140,9 +140,9 @@ export class AppComponent implements OnInit {
       let linea = this.verificarCamino(document.getElementById(this.origen), document.getElementById(this.destino));
       document.getElementById("svg").innerHTML += "<path id='" + idLinea + "' d='M0 0' stroke-width='0.3em' style='stroke:#555; fill:none;'/>";
       if (linea) {
-        this.connectElements0(document.getElementById("svg"), document.getElementById(idLinea), document.getElementById(this.origen), document.getElementById(this.destino));
+        this.connectElements1(document.getElementById("svg"), document.getElementById(idLinea), document.getElementById(this.origen), document.getElementById(this.destino));
       } else {
-        this.connectElements(document.getElementById("svg"), document.getElementById(idLinea), document.getElementById(this.origen), document.getElementById(this.destino));
+        this.connectElements2(document.getElementById("svg"), document.getElementById(idLinea), document.getElementById(this.origen), document.getElementById(this.destino));
       }
     }
   }
@@ -155,12 +155,12 @@ export class AppComponent implements OnInit {
     return (endTop > startTop && endTop < startBottom || endBottom > startTop && endBottom < startBottom) ? true : false;
   }
 
-  
-  connectElements0(svg, path, startElem, endElem) {
+
+  connectElements1(svg, path, startElem, endElem) {
     var svgContainer = document.getElementById("svgContainer");
 
     // if first element is lower than the second, swap!
-    if (startElem.offsetTop > endElem.offsetTop) {
+    if (endElem.offsetLeft < startElem.offsetLeft) {
       var temp = startElem;
       startElem = endElem;
       endElem = temp;
@@ -189,7 +189,7 @@ export class AppComponent implements OnInit {
 
   dibujarCamino1(svg, path, startX, startY, endX, endY) {
     // get the path's stroke width (if one wanted to be  really precize, one could use half the stroke size)
-    var gama = 10;
+    var gama = 100;
     var stroke = parseFloat(path.getAttribute("stroke-width")) + gama;
     // check if the svg is big enough to draw the path, if not, set heigh/width
     if (svg.getAttribute("height") < endY) svg.setAttribute("height", endY);
@@ -199,27 +199,27 @@ export class AppComponent implements OnInit {
     var deltaX = (endX - startX) * 0.15;
     var deltaY = (endY - startY) * 0.15;
     // for further calculations which ever is the shortest distance
-    var delta = deltaY < this.absolute(deltaX) ? deltaY : this.absolute(deltaX);
+    var delta = this.absolute(deltaY) < this.absolute(deltaX) ? this.absolute(deltaY) : this.absolute(deltaX);
 
     // set sweep-flag (counter/clock-wise)
     // if start element is closer to the left edge,
     // draw the first arc counter-clockwise, and the second one clock-wise
     var arc1 = 1; var arc2 = 0;
-    if (startX > endX) {
-      arc1 = 0;
-      arc2 = 1;
+    if (endY < startY) {
+      arc1 = 0; // Convexo ó en contra de las manecillas del reloj
+      arc2 = 1; // Concavo ó con las manecillas del reloj
     }
     // draw tha pipe-like path
     // 1. move a bit down, 2. arch,  3. move a bit to the right, 4.arch, 5. move down to the end 
     path.setAttribute("d", "M" + startX + " " + startY +
       " H" + (startX + delta) +
-      " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 2 * delta ) + " " + (startY +  delta * this.signum(deltaY)) +
+      " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 2 * delta) + " " + (startY + delta * this.signum(deltaY)) +
       " V" + (endY - delta * this.signum(deltaY)) +
       " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (startX + 3 * delta) + " " + endY +
       " H" + endX);
   }
 
-  connectElements(svg, path, startElem, endElem) {
+  connectElements2(svg, path, startElem, endElem) {
     var svgContainer = document.getElementById("svgContainer");
 
     // if first element is lower than the second, swap!
@@ -310,7 +310,7 @@ export class AppComponent implements OnInit {
       data: {
         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
         datasets: [{
-          label: 'Variable 1',
+          label: 'Resultados simulaciòn',
           data: [12, 19, 3, 5, 2, 3],
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
