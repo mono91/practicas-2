@@ -189,12 +189,12 @@ export class AppComponent implements OnInit {
 
   dibujarCamino1(svg, path, startX, startY, endX, endY) {
     // get the path's stroke width (if one wanted to be  really precize, one could use half the stroke size)
-    var gama = 100;
+    var gama = 10;
     var stroke = parseFloat(path.getAttribute("stroke-width")) + gama;
     // check if the svg is big enough to draw the path, if not, set heigh/width
-    if (svg.getAttribute("height") < endY) svg.setAttribute("height", endY);
-    if (svg.getAttribute("width") < (startX + stroke)) svg.setAttribute("width", (startX + stroke));
-    if (svg.getAttribute("width") < (endX + stroke)) svg.setAttribute("width", (endX + stroke));
+    if (svg.getAttribute("width") < endX) svg.setAttribute("width", endX);
+    if (svg.getAttribute("height") < (startY + stroke)) svg.setAttribute("height", (startY + stroke));
+    if (svg.getAttribute("height") < (endY + stroke)) svg.setAttribute("height", (endY + stroke));
 
     var deltaX = (endX - startX) * 0.15;
     var deltaY = (endY - startY) * 0.15;
